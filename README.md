@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+📝 To-Do List App
 
-## Getting Started
+Este proyecto es una To-Do List App desarrollada como parte del AI Automation Developer Challenge.
+La aplicación permite gestionar tareas con persistencia en la nube usando Supabase, está construida en Next.js y desplegada en Vercel.
 
-First, run the development server:
+🚀 Tecnologías usadas
 
-```bash
+Next.js
+ – Framework React
+
+Supabase
+ – Base de datos y autenticación
+
+Vercel
+ – Hosting y despliegue
+
+⚡ Funcionalidades
+
+Agregar nuevas tareas
+
+Editar tareas existentes
+
+Marcar tareas como completadas
+
+Persistencia de datos en Supabase
+
+Identificación básica de usuario (ej. nombre o email)
+
+📂 Instalación y uso
+
+Clona el repo:
+
+git clone https://github.com/WhiteStorm11/To-Do-List-App-.git
+cd To-Do-List-App-
+
+
+Instala dependencias:
+
+npm install
+
+
+Configura las variables de entorno en un archivo .env.local:
+
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
+
+Ejecuta en desarrollo:
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Abre en el navegador: http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🌍 Deploy en Vercel
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+La aplicación está desplegada en Vercel
+.
+Puedes hacer tu propio deploy fácilmente conectando tu repo de GitHub a Vercel y configurando las mismas variables de entorno.
