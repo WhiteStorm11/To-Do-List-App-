@@ -25,29 +25,25 @@ La aplicación permite gestionar tareas con persistencia en la nube usando **Sup
 
 ## 🚀 Instalación y configuración
 
-### 1️⃣ Clonar el repositorio
-```bash
+1️⃣ Clonar el repositorio
 git clone https://github.com/tuusuario/NodeProyectAI.git
 cd NodeProyectAI
+
 2️⃣ Inicializar Git (si es necesario)
-bash
-Copiar código
 git init
 git config --global --add safe.directory 'C:/Users/gadme/OneDrive/Desktop/PROXIMO SEMESTRE 2025-2/nodeproyectai'
+
 3️⃣ Instalar dependencias
-bash
-Copiar código
 npm install
+
 4️⃣ Variables de entorno
 Crea un archivo .env.local en la raíz del proyecto y agrega lo siguiente:
 
-env
-Copiar código
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
 5️⃣ Modo desarrollo
-bash
-Copiar código
 npm run dev
+
 Abrir en el navegador:
 👉 http://localhost:3000
