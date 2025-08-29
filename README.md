@@ -31,7 +31,7 @@ cd NodeProyectAI
 
 2️⃣ Inicializar Git (si es necesario)
 git init
-git config --global --add safe.directory 'C:/Users/gadme/OneDrive/Desktop/PROXIMO SEMESTRE 2025-2/nodeproyectai'
+git config --global --add safe.directory 'C:/Users/example'
 
 3️⃣ Instalar dependencias
 npm install
