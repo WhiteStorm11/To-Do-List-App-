@@ -1,103 +1,161 @@
-import Image from "next/image";
+"use client"
+
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabaseClient"
+import type { Task } from "@/lib/types"
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [newTask, setNewTask] = useState("")
+  const [newDescription, setNewDescription] = useState("")
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(() => {
+    fetchTasks()
+  }, [])
+
+  async function fetchTasks() {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("created_at", { ascending: false })
+
+    if (error) console.error(error)
+    else if (data) setTasks(data as Task[])
+  }
+
+  async function addTask(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newTask) return;
+
+    const { data, error } = await supabase
+      .from("tasks")
+      .insert([{ title: newTask, description: newDescription, is_completed: false }]);
+
+    if (error) {
+      console.error("Supabase Insert Error:", error);
+    } else {
+      console.log("Tarea creada:", data);
+    }
+
+    setNewTask("");
+    setNewDescription("");
+    fetchTasks();
+  }
+
+  async function toggleComplete(id: string, current: boolean) {
+    const { error } = await supabase
+      .from("tasks")
+      .update({ is_completed: !current })
+      .eq("id", id)
+
+    if (error) console.error(error)
+    fetchTasks()
+  }
+
+  async function editTask(id: string, title: string, description: string | null) {
+    const newTitle = prompt("Nuevo título:", title)
+    if (!newTitle) return
+    const newDescription = prompt("Nueva descripción:", description || '')
+
+    const { error } = await supabase
+      .from("tasks")
+      .update({ title: newTitle, description: newDescription })
+      .eq("id", id)
+
+    if (error) console.error(error)
+    fetchTasks()
+  }
+  
+  async function deleteTask(id: string) {
+    const { error } = await supabase
+      .from("tasks")
+      .delete()
+      .eq("id", id)
+
+    if (error) console.error(error)
+    fetchTasks()
+  }
+
+  return (
+    <main className="min-h-screen p-8 flex flex-col items-center">
+      <div className="w-full max-w-2xl bg-white p-8 rounded-xl shadow-2xl">
+        <h1 className="text-4xl text-center mb-8 tracking-tight">
+          Lista de Tareas
+        </h1>
+
+        <form onSubmit={addTask} className="space-y-4">
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium mb-1 text-gray-700">Título</label>
+            <input
+              id="title"
+              type="text"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder="Ej: Comprar el pan"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium mb-1 text-gray-700">Description (Optional)</label>
+            <textarea
+              id="description"
+              value={newDescription}
+              onChange={(e) => setNewDescription(e.target.value)}
+              placeholder="Ej: Pan baguette de la panadería de la esquina."
+              rows={3}
+              className="w-full px-4 py-2 border rounded-lg resize-none focus:ring-2 focus:ring-indigo-500"
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
           >
-            Read our docs
-          </a>
+            Add Task
+          </button>
+        </form>
+
+        {/* Lista de tareas */}
+        <div className="mt-8 space-y-4">
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className="p-4 rounded-lg bg-gray-50 flex items-center justify-between shadow-sm border border-gray-200"
+            >
+              <div className="flex-1 min-w-0">
+                <h3
+                  className={`text-lg font-semibold cursor-pointer ${
+                    task.is_completed ? "line-through text-gray-500" : "text-gray-900"
+                  }`}
+                  onClick={() => toggleComplete(task.id, task.is_completed)}
+                >
+                  {task.title}
+                </h3>
+                {task.description && (
+                  <p className={`text-sm text-gray-600 mt-1 ${task.is_completed ? "line-through" : ""}`}>
+                    {task.description}
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2 ml-4">
+                <button
+                  onClick={() => editTask(task.id, task.title, task.description)}
+                  className="text-indigo-500 hover:text-indigo-700 transition"
+                  title="Editar"
+                >
+                  ✏️
+                </button>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className="text-red-500 hover:text-red-700 transition"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </main>
   );
 }

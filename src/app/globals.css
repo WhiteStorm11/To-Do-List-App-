@@ -1,26 +1,59 @@
-@import "tailwindcss";
+/* src/app/globals.css */
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #f0f4f8; 
+  --foreground: #2d3748; 
+  --card: #ffffff; 
+  --primary: #4f46e5; 
+  --primary-hover: #4338ca;
+  --accent: #6ee7b7; 
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1a202c;
+    --foreground: #e2e8f0;
+    --card: #2d3748;
+    --primary: #818cf8;
+    --primary-hover: #6366f1;
+    --accent: #10b981;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter);
+}
+
+h1 {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+input, textarea {
+  border-color: #e2e8f0;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  ring-color: var(--primary);
+}
+
+button.primary {
+  background: var(--primary);
+  color: var(--card);
+}
+
+button.primary:hover {
+  background: var(--primary-hover);
+}
+
+.task-item {
+  background: var(--card);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
